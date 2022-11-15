@@ -1,10 +1,14 @@
 import sys
 
+from Test import Application
 import matplotlib.figure
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
+from tkinter import *
+from tkinter import ttk
 
 def mainWidget():
     root1 = tk.Tk()
@@ -24,7 +28,7 @@ def mainWidget():
 
     tk.mainloop()
 def tkek():
-    root = tk.Tk()
+    root = tk.Toplevel()
     tk.Label(root,
              text="x").grid(row=0)
     tk.Label(root,
@@ -70,8 +74,18 @@ def tkek():
                                       column=4,
                                       sticky=tk.W,
                                       pady=4)
-    tk.mainloop()
+    lstX = [x1, x2, x3, x4, x5, x6, x7, x8]
+    lstY = [y1, y2, y3, y4, y5, y6, y7, y8]
+
     global x, y, interpol
+
+    for i in range(len(lstX)):
+        lstX[i].insert(0, x[i])
+        lstY[i].insert(0, y[i])
+
+    tk.mainloop()
+
+
     if (len(x) == 0) and (len(y) == 0):
         tk.Label(root,
                  text="interpolation").grid(row=2)
@@ -97,6 +111,48 @@ def tkek():
             if Y[i] != "":
                 y[i] = float(Y[i])
 
+    grafik()
+
+
+def grafik():
+    global x, y
+    b = lagranz(x, y, interpol)
+    print(b)
+    xnew = np.linspace(np.min(x), np.max(x), 100)
+    ynew = [lagranz(x, y, i) for i in xnew]
+    # c = lagranz(x, y, interpol)
+    # x = np.append(x, interpol)
+    # y = np.append(y, c)
+    plt.plot(x, y, 'o', xnew, ynew)
+    plt.plot(interpol, int(b), 'ro')
+    plt.grid(True)
+    # plt.title(r'$\Phi_k(x) = \prod_{{j=0, j\neq k}}^n \frac{x-x_j}{x_k-x_j}, k = 0, ..., n$')
+    # plt.title(r'$P_n(x) = \sum_{j=0}^n y_j L_j(x)/L_j(x_j)$')
+    plt.title(r'$P_n(x) = \sum_{j=0}^n \frac{'
+              r'y_j (x-x_0)(x-x_1)...(x-x_{j-1})(x-x_{j+1})}'
+              r'{(x_j-x_0)(x_j-x_1)...('
+              r'x_j-x_{j-1})(x_j-x_{j+1})(x_j-x_n)}$')
+    plt.show()
+
+def formula():
+    global x, y
+    a = ''
+    b = ''
+    fin = ''
+    for i in range(8):
+        for j in range(8):
+            if (i != j):
+                a += fr'({interpol}-({x[j]}))'
+                b += fr'{x[i]}-({x[j]}))'
+        if (i != 7):
+            fin += fr'${y[i]}' r'\frac{' fr'{a} 'r'}' r'{' fr'{b}' r'}+$'
+        else:
+            fin += fr'${y[i]}' r'\frac{' fr'{a} 'r'}' r'{' fr'{b}' r'}$'
+
+    root = tk.Toplevel()
+    # root = tk.Tk()
+    app = Application(fin, master=root)
+    app.mainloop()
 
 def HelloWidget(lstx, lsty):
     root1 = tk.Tk()
@@ -111,11 +167,42 @@ def HelloWidget(lstx, lsty):
               font=("Helvetica 11")).place(x=95, y=180)
     tk.Button(root1,
               text='N',
-              command=root1.quit,
+              command=grafik,
               font=("Helvetica 11")).place(x=200, y=180)
+    tk.Button(root1,
+              text='Formula',
+              command=formula,
+              font=("Helvetica 11")).place(x=150, y=280)
 
     tk.mainloop()
 
+
+    # mainframe = tk.Frame(root)
+    # mainframe.pack()
+    #
+    # label = tk.Label(mainframe)
+    # label.pack()
+    #
+    # fig = matplotlib.figure.Figure(figsize=(5, 4), dpi=1000)
+    # ax = fig.add_subplot(111)
+    # ax.text(0.2, 0.6, fin, fontsize=1)
+    #
+    # canvas = FigureCanvasTkAgg(fig, master=label)
+    # canvas.get_tk_widget().pack(side="top", fill="both", expand=True)
+    # canvas._tkcanvas.pack(side="top", fill="both", expand=True)
+    #
+    # hbar = Scrollbar(mainframe, orient=HORIZONTAL)
+    # hbar.pack(side=BOTTOM, fill=X)
+    # hbar.config(command=tk.Canvas.xview)
+    #
+    # ax.get_xaxis().set_visible(False)
+    # ax.get_yaxis().set_visible(False)
+    #
+    # root.bind("<Return>", fin)
+    # # scroll = tk.Scrollbar(mainframe, orient='horizontal', command=ax.hview)
+    # # scroll.pack(side='bottom', fill='x')
+    # # ax.config(xscroll)
+    # root.mainloop()
 
 def lagranz(x, y, interpol):
     z = 0
@@ -203,14 +290,32 @@ match table:
         y = np.array([0, 2, 4, 30, 31, 28, 25, 20], dtype=float)
         HelloWidget(x, y)
 
-print(lagranz(x, y, interpol))
+b = lagranz(x, y, interpol)
+print(b)
 xnew = np.linspace(np.min(x), np.max(x), 100)
 ynew = [lagranz(x, y, i) for i in xnew]
-c = lagranz(x, y, interpol)
-x = np.append(x, interpol)
-y = np.append(y, c)
+# c = lagranz(x, y, interpol)
+# x = np.append(x, interpol)
+# y = np.append(y, c)
 plt.plot(x, y, 'o', xnew, ynew)
+plt.plot(interpol, int(b), 'ro')
 plt.grid(True)
 # plt.title(r'$\Phi_k(x) = \prod_{{j=0, j\neq k}}^n \frac{x-x_j}{x_k-x_j}, k = 0, ..., n$')
-plt.title(r'$P_n(x) = \sum_{j=0}^n y_j L_j(x)/L_j(x_j)$')
-plt.show()
+# plt.title(r'$P_n(x) = \sum_{j=0}^n y_j L_j(x)/L_j(x_j)$')
+plt.title(r'$P_n(x) = \sum_{j=0}^n \frac{'
+          r'y_j (x-x_0)(x-x_1)...(x-x_{j-1})(x-x_{j+1})}'
+          r'{(x_j-x_0)(x_j-x_1)...('
+          r'x_j-x_{j-1})(x_j-x_{j+1})(x_j-x_n)}$')
+# plt.show()
+# formula()
+# a = ''
+# b = ''
+# fin = ''
+# for i in range(8):
+#     for j in range(8):
+#         if (i != j):
+#             a += fr'({interpol}-({x[j]}))'
+#             b += fr'{x[i]}-({x[j]}))'
+#     fin += fr'${y[i]}' r'\frac{' fr'{a} 'r'}' r'{' fr'{b}' r'}$'
+# plt.title(f'{fin}', fontsize=2)
+
