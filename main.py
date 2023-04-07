@@ -138,16 +138,16 @@ def formula():
     global x, y
     a = ''
     b = ''
-    fin = ''
+    fin = []
     for i in range(8):
         for j in range(8):
             if (i != j):
                 a += fr'({interpol}-({x[j]}))'
                 b += fr'{x[i]}-({x[j]}))'
         if (i != 7):
-            fin += fr'${y[i]}' r'\frac{' fr'{a} 'r'}' r'{' fr'{b}' r'}+$'
+            fin += [fr'${y[i]}' r'\frac{' fr'{a} 'r'}' r'{' fr'{b}' r'}+$']
         else:
-            fin += fr'${y[i]}' r'\frac{' fr'{a} 'r'}' r'{' fr'{b}' r'}$'
+            fin += [fr'${y[i]}' r'\frac{' fr'{a} 'r'}' r'{' fr'{b}' r'}$']
 
     root = tk.Toplevel()
     # root = tk.Tk()
