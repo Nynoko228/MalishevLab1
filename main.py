@@ -140,17 +140,23 @@ def formula():
     b = ''
     fin = []
     for i in range(8):
+        a = ''
+        b = ''
         for j in range(8):
-            if (i != j):
-                a += fr'({interpol}-({x[j]}))'
-                b += fr'{x[i]}-({x[j]}))'
-        if (i != 7):
+            if (j != i):
+                if (x[j] >= 0):
+                    a += fr'({interpol}-{x[j]})'
+                    b += fr'({x[i]}-{x[j]})'
+                else:
+                    a += fr'({interpol}-({x[j]}))'
+                    b += fr'({x[i]}-({x[j]}))'
+        if ((i != 7) and (j != i)):
             fin += [fr'${y[i]}' r'\frac{' fr'{a} 'r'}' r'{' fr'{b}' r'}+$']
-        else:
-            fin += [fr'${y[i]}' r'\frac{' fr'{a} 'r'}' r'{' fr'{b}' r'}$']
+    fin += [fr'${y[7]}' r'\frac{' fr'{a} 'r'}' r'{' fr'{b}' r'}$']
 
     root = tk.Toplevel()
     # root = tk.Tk()
+    print((len(fin)))
     app = Application(fin, master=root)
     app.mainloop()
 
@@ -177,33 +183,6 @@ def HelloWidget(lstx, lsty):
     tk.mainloop()
 
 
-    # mainframe = tk.Frame(root)
-    # mainframe.pack()
-    #
-    # label = tk.Label(mainframe)
-    # label.pack()
-    #
-    # fig = matplotlib.figure.Figure(figsize=(5, 4), dpi=1000)
-    # ax = fig.add_subplot(111)
-    # ax.text(0.2, 0.6, fin, fontsize=1)
-    #
-    # canvas = FigureCanvasTkAgg(fig, master=label)
-    # canvas.get_tk_widget().pack(side="top", fill="both", expand=True)
-    # canvas._tkcanvas.pack(side="top", fill="both", expand=True)
-    #
-    # hbar = Scrollbar(mainframe, orient=HORIZONTAL)
-    # hbar.pack(side=BOTTOM, fill=X)
-    # hbar.config(command=tk.Canvas.xview)
-    #
-    # ax.get_xaxis().set_visible(False)
-    # ax.get_yaxis().set_visible(False)
-    #
-    # root.bind("<Return>", fin)
-    # # scroll = tk.Scrollbar(mainframe, orient='horizontal', command=ax.hview)
-    # # scroll.pack(side='bottom', fill='x')
-    # # ax.config(xscroll)
-    # root.mainloop()
-
 def lagranz(x, y, interpol):
     z = 0
     for j in range(len(y)):
@@ -220,8 +199,9 @@ def lagranz(x, y, interpol):
     return z
 
 # mainWidget()
-print("Введите номер таблицы: ", end="")
-table = int(input())
+# print("Введите номер таблицы: ", end="")
+# table = int(input())
+table = 8
 match table:
     case 0:
         x = ""

@@ -15,7 +15,7 @@ class Application(tk.Frame):
 
     def createWidgets(self):
         image = []
-        for i in range(len(self.fin)):
+        for i in range(8):
             # Creating buffer for storing image in memory
             buffer = BytesIO()
             # Writing png image with our rendered greek alpha to buffer
